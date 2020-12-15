@@ -50,7 +50,7 @@ namespace OpenTriviaSharp
 
 			this.AddUserAgent();
 
-			if(sessionToken == null || sessionToken.Trim() == "")
+			if (sessionToken == null || sessionToken.Trim() == "")
 			{
 				this._SessionToken = "";
 			}
@@ -82,7 +82,7 @@ namespace OpenTriviaSharp
 		#region Properties
 
 		/// <summary>
-		/// Get current token.
+		/// Get current session token.
 		/// </summary>
 		public string Token
 		{
