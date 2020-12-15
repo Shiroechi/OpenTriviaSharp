@@ -1,5 +1,5 @@
-﻿using System.Net.Http;
-using System.Net.Http.Headers;
+﻿using System.Collections.Generic;
+using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -148,6 +148,32 @@ namespace OpenTriviaSharp
 			{
 				throw;
 			}
+		}
+
+		/// <summary>
+		/// Read JSON data.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns>
+		///		A <see cref="TriviaQuestion"/>.
+		/// </returns>
+		protected TriviaQuestion ReadTriviaQuestion(JsonElement item)
+		{
+			var incorrect = new List<string>();
+
+			foreach (var ans in item.GetProperty("incorrect_answers").EnumerateArray())
+			{
+				incorrect.Add(ans.GetString());
+			}
+
+			return new TriviaQuestion(
+				this.DetermineCategory(item.GetProperty("category").GetString()), 
+				this.DetermineType(item.GetProperty("type").GetString()), 
+				this.DetermineDifficulty(item.GetProperty("difficulty").GetString()), 
+				item.GetProperty("question").GetString(), 
+				item.GetProperty("correct_answer").GetString(),
+				incorrect.ToArray()
+				);
 		}
 
 		/// <summary>
