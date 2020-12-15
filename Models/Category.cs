@@ -5,6 +5,7 @@
 	/// </summary>
 	public enum Category
 	{
+		Any,
 		General = 9,
 		Books = 10,
 		Film = 11,
