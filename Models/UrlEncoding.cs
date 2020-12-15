@@ -8,10 +8,10 @@
 		/// <summary>
 		/// All values will be enoded in Base64.
 		/// </summary>
-		Base64, 
+		Base64,
 		/// <summary>
 		/// All values will be encoded in URL encoding (RFC 3986).
 		/// </summary>
-		RFC3986
+		Url3986
 	}
 }
