@@ -91,11 +91,28 @@ namespace OpenTriviaSharp
 
 		#endregion Properties
 
-
 		#region Private Method
 
 		/// <summary>
-		///		Convert reponse category to <see cref="Category"/>.
+		/// Add browser user agent to <see cref="HttpClient"/>.
+		/// </summary>
+		private void AddUserAgent()
+		{
+			if (this._Client == null)
+			{
+				return;
+			}
+
+			if (this._Client.DefaultRequestHeaders.UserAgent.Count == 0)
+			{
+				this._Client.DefaultRequestHeaders.Add(
+					"User-Agent",
+					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36");
+			}
+		}
+
+		/// <summary>
+		///		Convert JSON reponse category property to <see cref="Category"/>.
 		/// </summary>
 		/// <param name="category">
 		///		Category string from JSON response.
@@ -204,6 +221,30 @@ namespace OpenTriviaSharp
 			else
 			{
 				return Category.Any;
+			}
+		}
+
+		/// <summary>
+		///		Convert JSON reponse difficulty property to <see cref="Difficulty"/>.
+		/// </summary>
+		/// <param name="difficulty">
+		///		Difficulty string from JSON response.
+		/// </param>
+		/// <returns>
+		///		<see cref="Difficulty"/> based on parameter <paramref name="difficulty"/>.
+		/// </returns>
+		private Difficulty DetermineDifficulty(string difficulty)
+		{
+			switch (difficulty)
+			{
+				case "hard":
+					return Difficulty.Hard;
+				case "medium":
+					return Difficulty.Medium;
+				case "easy":
+					return Difficulty.Easy;
+				default:
+					return Difficulty.Any;
 			}
 		}
 
