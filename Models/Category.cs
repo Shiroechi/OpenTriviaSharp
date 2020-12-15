@@ -9,7 +9,7 @@
 		General = 9,
 		Books = 10,
 		Film = 11,
-		music = 12,
+		Music = 12,
 		Theatres = 13,
 		Television = 14,
 		VideoGames = 15,
