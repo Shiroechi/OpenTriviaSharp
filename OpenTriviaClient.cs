@@ -1,6 +1,8 @@
 ﻿using System.Collections.Generic;
+using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Text.Json;
 using System.Threading.Tasks;
 
@@ -390,5 +392,106 @@ namespace OpenTriviaSharp
 
 		#endregion Protected Method
 
+		#region Public Method
+
+		/// <summary>
+		///		Retrieves random <see cref="TriviaQuestion"/>.
+		/// </summary>
+		/// <param name="amount">
+		///		 Amount of questions to be retrieved.
+		/// </param>
+		/// <param name="category">
+		///		Category of the questions to be retrieved.
+		/// </param>
+		/// <param name="type">
+		///		Type of the questions to be retrieved.
+		/// </param>
+		/// <param name="difficulty">
+		///		 Difficulty of the questions to be retrieved.
+		/// </param>
+		/// <param name="encoding">
+		///		 Encoding of the API response to be used.
+		/// </param>
+		/// <param name="sessionToken">
+		///		Session token to be used.
+		/// </param>
+		/// <returns>
+		///		Array of <see cref="TriviaQuestion"/> based on specified parameters.
+		/// </returns>
+		/// <exception cref="OpenTriviaException">
+		///		Unexpected error occured.
+		/// </exception>
+		/// <exception cref="HttpRequestException">
+		///		The request failed due to an underlying issue such as network connectivity, DNS
+		///     failure, server certificate validation or timeout.
+		/// </exception>
+		/// <exception cref="JsonException">
+		///		The JSON is invalid.
+		/// </exception>
+		public async Task<TriviaQuestion[]> GetQuestionAsync(byte amount = 10, Category category = Category.Any, TriviaType type = TriviaType.Any, Difficulty difficulty = Difficulty.Any, UrlEncoding encoding = UrlEncoding.Url3986, string sessionToken = "")
+		{
+			if (amount <= 0)
+			{
+				amount = 1;
+			}
+			else if (amount > 50) // hard limit
+			{
+				amount = 50;
+			}
+
+			var url = new StringBuilder(this._BaseApiUrl + $"amount={ amount }");
+			
+			if (category != Category.Any)
+			{
+				url.Append($"&category={ (byte)category }");
+			}
+
+			if (difficulty != Difficulty.Any)
+			{
+				url.Append($"&difficulty={ difficulty }");
+			}
+
+			if (type != TriviaType.Any)
+			{
+				url.Append($"&type={ type }");
+			}
+
+			url.Append($"&encode={ encoding.ToString().ToLower() }");
+			
+			if (sessionToken != "")
+			{
+				url.Append($"&token{ sessionToken }");
+			}
+			else
+			{
+				if (this._SessionToken != "")
+				{
+					url.Append($"&token{ this._SessionToken }");
+				}
+			}
+
+			using (var doc = await this.GetJsonResponseAsync<JsonDocument>(url.ToString()))
+			{
+				var responseCode = doc.RootElement.GetProperty("response_code").GetByte();
+
+				if (responseCode != 0)
+				{
+					throw new OpenTriviaException(this.ResponseError(responseCode));
+				}
+
+				var jsonArray = doc.RootElement.GetProperty("results");
+
+				var questions = new List<TriviaQuestion>();
+
+				foreach (var item in jsonArray.EnumerateArray())
+				{
+					questions.Add(this.ReadTriviaQuestion(item));
+				}
+
+				return questions.ToArray();
+			}
+		}
+
+		#endregion Public Method
 	}
 }
