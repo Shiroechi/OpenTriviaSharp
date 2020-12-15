@@ -59,7 +59,7 @@ namespace OpenTriviaSharp
 		/// </summary>
 		~OpenTriviaClient()
 		{
-			if (this._Supplied == false
+			if (this._Supplied == false)
 			{
 				this._Client.Dispose();
 			}
@@ -235,7 +235,7 @@ namespace OpenTriviaSharp
 		/// </returns>
 		private Difficulty DetermineDifficulty(string difficulty)
 		{
-			switch(difficulty)
+			switch (difficulty)
 			{
 				case "hard":
 					return Difficulty.Hard;
@@ -259,7 +259,7 @@ namespace OpenTriviaSharp
 		/// </returns>
 		private TriviaType DetermineType(string type)
 		{
-			switch(type)
+			switch (type)
 			{
 				case "multiple":
 					return TriviaType.MultipleChoice;
@@ -267,6 +267,34 @@ namespace OpenTriviaSharp
 					return TriviaType.TrueFalse;
 				default:
 					return TriviaType.Any;
+			}
+		}
+
+		/// <summary>
+		///		Get response message based on response code.
+		/// </summary>
+		/// <param name="responseCode">
+		///		Response code in the JSON response.
+		/// </param>
+		/// <returns>
+		///		Message based on response code.
+		/// </returns>
+		private string ResponseError(byte responseCode)
+		{
+			switch (responseCode)
+			{
+				case 0:
+					return "Returned results successfully.";
+				case 1:
+					return "The API doesn't have enough questions for your query.";
+				case 2:
+					return "Invalid parameter(s). Arguments passed aren't valid.";
+				case 3:
+					return "Invalid session token.";
+				case 4:
+					return "Session token has retrieved all possible questions for the specified query. Reset the token.";
+				default:
+					return "An error has occured in the API";
 			}
 		}
 
