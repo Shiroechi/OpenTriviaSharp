@@ -235,7 +235,7 @@ namespace OpenTriviaSharp
 		/// </returns>
 		private Difficulty DetermineDifficulty(string difficulty)
 		{
-			switch (difficulty)
+			switch(difficulty)
 			{
 				case "hard":
 					return Difficulty.Hard;
@@ -245,6 +245,28 @@ namespace OpenTriviaSharp
 					return Difficulty.Easy;
 				default:
 					return Difficulty.Any;
+			}
+		}
+
+		/// <summary>
+		///		Convert JSON reponse type property to <see cref="TriviaType"/>.
+		/// </summary>
+		/// <param name="type">
+		///		Type string from JSON response.
+		/// </param>
+		/// <returns>
+		///		<see cref="TriviaType"/> based on parameter <paramref name="type"/>.
+		/// </returns>
+		private TriviaType DetermineType(string type)
+		{
+			switch(type)
+			{
+				case "multiple":
+					return TriviaType.MultipleChoice;
+				case "boolean":
+					return TriviaType.TrueFalse;
+				default:
+					return TriviaType.Any;
 			}
 		}
 
