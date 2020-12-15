@@ -47,6 +47,8 @@ namespace OpenTriviaSharp
 				this._Supplied = true;
 			}
 
+			this.AddUserAgent();
+
 			if(token == null || token.Trim() == "")
 			{
 				token = "";
