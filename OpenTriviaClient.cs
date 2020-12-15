@@ -1,6 +1,9 @@
 ﻿using System.Net.Http;
 using System.Net.Http.Headers;
+using System.Text.Json;
+using System.Threading.Tasks;
 
+using OpenTriviaSharp.Exceptions;
 using OpenTriviaSharp.Models;
 
 namespace OpenTriviaSharp
@@ -12,7 +15,7 @@ namespace OpenTriviaSharp
 	{
 		#region Member
 
-		private HttpClient _Client;
+		private HttpClient _HttpClient;
 		private bool _Supplied;
 		private string _BaseApiUrl = "https://opentdb.com/api.php?";
 		private string _BaseTokenApiUrl = "https://opentdb.com/api.php?";
@@ -35,12 +38,12 @@ namespace OpenTriviaSharp
 		{
 			if (client == null)
 			{
-				this._Client = new HttpClient();
+				this._HttpClient = new HttpClient();
 				this._Supplied = false;
 			}
 			else
 			{
-				this._Client = client;
+				this._HttpClient = client;
 				this._Supplied = true;
 			}
 
@@ -61,7 +64,7 @@ namespace OpenTriviaSharp
 		{
 			if (this._Supplied == false)
 			{
-				this._Client.Dispose();
+				this._HttpClient.Dispose();
 			}
 		}
 
@@ -94,18 +97,70 @@ namespace OpenTriviaSharp
 		#region Private Method
 
 		/// <summary>
+		///		Get JSON response from url.
+		/// </summary>
+		/// <typeparam name="T">
+		///		The type of the object to deserialize.
+		///	</typeparam>
+		/// <param name="url">
+		///		API URL. 
+		/// </param>
+		/// <returns>
+		///		The instance of <typeparamref name="T"/> being deserialized.
+		///	</returns>
+		/// <exception cref="OpenTriviaException">
+		///		Unexpected error occured.
+		/// </exception>
+		/// <exception cref="HttpRequestException">
+		///		The request failed due to an underlying issue such as network connectivity, DNS
+		///     failure, server certificate validation or timeout.
+		/// </exception>
+		/// <exception cref="JsonException">
+		///		The JSON is invalid.
+		/// </exception>
+		protected async Task<T> GetJsonResponseAsync<T>(string url)
+		{
+			try
+			{
+				using (var request = new HttpRequestMessage(HttpMethod.Get, url))
+				using (var response = await this._HttpClient.SendAsync(request, HttpCompletionOption.ResponseHeadersRead))
+				using (var stream = await response.Content.ReadAsStreamAsync())
+				{
+					if (response.IsSuccessStatusCode)
+					{
+						try
+						{
+							return await JsonSerializer.DeserializeAsync<T>(stream);
+						}
+						catch (JsonException)
+						{
+							throw;
+						}
+					}
+
+					throw new OpenTriviaException(
+						$"Unexpected error occured.\n Status code = { (int)response.StatusCode }\n Reason = { response.ReasonPhrase }.");
+				}
+			}
+			catch (HttpRequestException)
+			{
+				throw;
+			}
+		}
+
+		/// <summary>
 		/// Add browser user agent to <see cref="HttpClient"/>.
 		/// </summary>
 		private void AddUserAgent()
 		{
-			if (this._Client == null)
+			if (this._HttpClient == null)
 			{
 				return;
 			}
 
-			if (this._Client.DefaultRequestHeaders.UserAgent.Count == 0)
+			if (this._HttpClient.DefaultRequestHeaders.UserAgent.Count == 0)
 			{
-				this._Client.DefaultRequestHeaders.Add(
+				this._HttpClient.DefaultRequestHeaders.Add(
 					"User-Agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36");
 			}
