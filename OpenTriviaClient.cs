@@ -50,13 +50,13 @@ namespace OpenTriviaSharp
 
 			this.AddUserAgent();
 
-			if(token == null || token.Trim() == "")
+			if(sessionToken == null || sessionToken.Trim() == "")
 			{
-				token = "";
+				this._SessionToken = "";
 			}
 			else
 			{
-				this.Token = token;
+				this._SessionToken = sessionToken;
 			}
 
 			ServicePointManager.SecurityProtocol =
