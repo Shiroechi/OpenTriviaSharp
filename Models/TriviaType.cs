@@ -6,7 +6,13 @@
 	public enum TriviaType
 	{
 		Any, 
-		MultipleChoice,
-		TrueFalse // boolean
+		/// <summary>
+		/// Multiple choice.
+		/// </summary>
+		Multiple,
+		/// <summary>
+		/// True or False.
+		/// </summary>
+		Boolean
 	}
 }
