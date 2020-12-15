@@ -20,22 +20,22 @@ namespace OpenTriviaSharp
 		private bool _Supplied;
 		private string _BaseApiUrl = "https://opentdb.com/api.php?";
 		private string _BaseTokenApiUrl = "https://opentdb.com/api.php?";
-		private string _Token;
+		private string _SessionToken;
 
 		#endregion Member
 
 		#region Constructor & Destructor
 
 		/// <summary>
-		/// 
+		/// Create <see cref="OpenTriviaClient"/> instance.
 		/// </summary>
 		/// <param name="client">
 		///		<see cref="HttpClient"/> object to send and receiving response.
 		/// </param>
-		/// <param name="token">
+		/// <param name="sessionToken">
 		///		Session token of Open Trivia for tracking requested question.
 		/// </param>
-		public OpenTriviaClient(HttpClient client = null, string token = null)
+		public OpenTriviaClient(HttpClient client = null, string sessionToken = null)
 		{
 			if (client == null)
 			{
@@ -93,11 +93,11 @@ namespace OpenTriviaSharp
 					return;
 				}
 
-				this._Token = value;
+				this._SessionToken = value;
 			}
 			get
 			{
-				return this._Token;
+				return this._SessionToken;
 			}
 		}
 
