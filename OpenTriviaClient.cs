@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using System.Net;
 using System.Net.Http;
 using System.Text.Json;
 using System.Threading.Tasks;
@@ -57,6 +58,12 @@ namespace OpenTriviaSharp
 			{
 				this.Token = token;
 			}
+
+			ServicePointManager.SecurityProtocol =
+				SecurityProtocolType.Tls12 |
+				SecurityProtocolType.Tls11 |
+				SecurityProtocolType.Tls |
+				SecurityProtocolType.Ssl3;
 		}
 
 		/// <summary>
@@ -345,9 +352,9 @@ namespace OpenTriviaSharp
 			switch (type)
 			{
 				case "multiple":
-					return TriviaType.MultipleChoice;
+					return TriviaType.Multiple;
 				case "boolean":
-					return TriviaType.TrueFalse;
+					return TriviaType.Boolean;
 				default:
 					return TriviaType.Any;
 			}
