@@ -96,7 +96,7 @@ namespace OpenTriviaSharp
 
 		#endregion Properties
 
-		#region Private Method
+		#region Protected Method
 
 		/// <summary>
 		///		Get JSON response from url.
@@ -153,7 +153,7 @@ namespace OpenTriviaSharp
 		/// <summary>
 		/// Add browser user agent to <see cref="HttpClient"/>.
 		/// </summary>
-		private void AddUserAgent()
+		protected void AddUserAgent()
 		{
 			if (this._HttpClient == null)
 			{
@@ -177,7 +177,7 @@ namespace OpenTriviaSharp
 		/// <returns>
 		///		<see cref="Category"/> based on paramater <paramref name="category"/>.
 		/// </returns>
-		private Category DetermineCategory(string category)
+		protected Category DetermineCategory(string category)
 		{
 			if (category.Contains("General"))
 			{
@@ -290,7 +290,7 @@ namespace OpenTriviaSharp
 		/// <returns>
 		///		<see cref="Difficulty"/> based on parameter <paramref name="difficulty"/>.
 		/// </returns>
-		private Difficulty DetermineDifficulty(string difficulty)
+		protected Difficulty DetermineDifficulty(string difficulty)
 		{
 			switch (difficulty)
 			{
@@ -314,7 +314,7 @@ namespace OpenTriviaSharp
 		/// <returns>
 		///		<see cref="TriviaType"/> based on parameter <paramref name="type"/>.
 		/// </returns>
-		private TriviaType DetermineType(string type)
+		protected TriviaType DetermineType(string type)
 		{
 			switch (type)
 			{
@@ -336,7 +336,7 @@ namespace OpenTriviaSharp
 		/// <returns>
 		///		Message based on response code.
 		/// </returns>
-		private string ResponseError(byte responseCode)
+		protected string ResponseError(byte responseCode)
 		{
 			switch (responseCode)
 			{
@@ -355,7 +355,7 @@ namespace OpenTriviaSharp
 			}
 		}
 
-		#endregion Private Method
+		#endregion Protected Method
 
 	}
 }
