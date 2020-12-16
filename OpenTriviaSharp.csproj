@@ -4,8 +4,8 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
     <Authors>Shiroechi</Authors>
-    <Product>Shiroechi</Product>
-    <Copyright>Shirocehi</Copyright>
+    <Product>API wrapper for opentdb.com</Product>
+    <Copyright>Shiroechi</Copyright>
     <RepositoryUrl>https://github.com/Shiroechi/OpenTriviaSharp</RepositoryUrl>
     <RepositoryType>git</RepositoryType>
     <NeutralLanguage>en</NeutralLanguage>

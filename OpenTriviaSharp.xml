@@ -318,5 +318,13 @@
             	Number of question.
             </returns>
         </member>
+        <member name="M:OpenTriviaSharp.OpenTriviaClient.CategoryListAsync">
+            <summary>
+            	Get category list.
+            </summary>
+            <returns>
+            	Array of tuple (id, name) of category.
+            </returns>
+        </member>
     </members>
 </doc>
