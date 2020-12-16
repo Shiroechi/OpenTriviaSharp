@@ -602,9 +602,7 @@ namespace OpenTriviaSharp
 					throw new OpenTriviaException(this.ResponseError(responseCode));
 				}
 
-				var token = doc.RootElement.GetProperty("token");
-
-				return token.GetString();
+				return doc.RootElement.GetProperty("token").GetString();
 			}
 		}
 
@@ -632,9 +630,7 @@ namespace OpenTriviaSharp
 						throw new OpenTriviaException(this.ResponseError(responseCode));
 					}
 
-					var token = doc.RootElement.GetProperty("token");
-
-					return token.GetString();
+					return doc.RootElement.GetProperty("token").GetString();
 				}
 			}
 			catch (JsonException)
