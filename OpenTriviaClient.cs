@@ -688,6 +688,33 @@ namespace OpenTriviaSharp
 			}
 		}
 
+		/// <summary>
+		///		Get category list.
+		/// </summary>
+		/// <returns>
+		///		Array of tuple (id, name) of category.
+		/// </returns>
+		public async Task<(byte, string)[]> CategoryListAsync()
+		{
+			var url = "https://opentdb.com/api_category.php";
+			
+			using (var doc = await this.GetJsonResponseAsync<JsonDocument>(url))
+			{
+				var category = doc.RootElement.GetProperty("trivia_categories");
+
+				var tuple = new List<(byte, string)>();
+				
+				foreach (var item in category.EnumerateArray())
+				{
+					tuple.Add(
+						(item.GetProperty("id").GetByte(), 
+						item.GetProperty("name").GetString()));
+				}
+
+				return tuple.ToArray();
+			}
+		}
+
 		#endregion Public Method
 	}
 }
