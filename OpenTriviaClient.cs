@@ -21,7 +21,7 @@ namespace OpenTriviaSharp
 		private HttpClient _HttpClient;
 		private readonly bool _Supplied;
 		private readonly string _BaseApiUrl = "https://opentdb.com/api.php?";
-		private readonly string _BaseTokenApiUrl = "https://opentdb.com/api.php?";
+		private readonly string _BaseTokenApiUrl = "https://opentdb.com/api_token.php?";
 		private string _SessionToken;
 
 		#endregion Member
@@ -580,6 +580,31 @@ namespace OpenTriviaSharp
 				}
 
 				return questions.ToArray();
+			}
+		}
+
+		/// <summary>
+		///		Retrieves a new session token.
+		/// </summary>
+		/// <returns>
+		///		New session token.
+		/// </returns>
+		public string RequestToken()
+		{
+			var url = $"{ this._BaseTokenApiUrl }command=request";
+			
+			using (var doc = await this.GetJsonResponseAsync<JsonDocument>(url))
+			{
+				var responseCode = doc.RootElement.GetProperty("response_code").GetByte();
+
+				if (responseCode != 0)
+				{
+					throw new OpenTriviaException(this.ResponseError(responseCode));
+				}
+
+				var token = doc.RootElement.GetProperty("token");
+
+				return token.GetString();
 			}
 		}
 
