@@ -189,6 +189,34 @@ namespace OpenTriviaSharp
 		}
 
 		/// <summary>
+		/// Read JSON data with encoding <see cref="ResponseEncoding.Url3986"/>.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns>
+		///		A <see cref="TriviaQuestion"/>.
+		/// </returns>
+		protected TriviaQuestion ReadTriviaQuestionURL(JsonElement item)
+		{
+			var incorrect = new List<string>();
+
+			foreach (var ans in item.GetProperty("incorrect_answers").EnumerateArray())
+			{
+				incorrect.Add(
+					HttpUtility.UrlDecode(
+						ans.GetString()));
+			}
+
+			return new TriviaQuestion(
+				this.DetermineCategory(HttpUtility.UrlDecode(item.GetProperty("category").GetString())),
+				this.DetermineType(item.GetProperty("type").GetString()),
+				this.DetermineDifficulty(item.GetProperty("difficulty").GetString()),
+				HttpUtility.UrlDecode(item.GetProperty("question").GetString()),
+				HttpUtility.UrlDecode(item.GetProperty("correct_answer").GetString()),
+				incorrect.ToArray()
+				);
+		}
+
+		/// <summary>
 		/// Add browser user agent to <see cref="HttpClient"/>.
 		/// </summary>
 		protected void AddUserAgent()
@@ -491,7 +519,14 @@ namespace OpenTriviaSharp
 
 				foreach (var item in jsonArray.EnumerateArray())
 				{
-					questions.Add(this.ReadTriviaQuestion(item));
+					if (encoding == ResponseEncoding.Default)
+					{
+						questions.Add(this.ReadTriviaQuestion(item));
+					}
+					else if (encoding == ResponseEncoding.Url3986)
+					{
+						questions.Add(this.ReadTriviaQuestionURL(item));
+					}
 				}
 
 				return questions.ToArray();
