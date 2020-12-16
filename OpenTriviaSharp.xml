@@ -301,8 +301,11 @@
             	Session token to be reset.
             </param>
             <returns>
-            	New session token.
+            	<see langword="true"/> if session token reseted; <see langword="false"/> otherwise.
             </returns>
+            <exception cref="T:System.Text.Json.JsonException">
+            	The JSON is invalid.
+            </exception>
         </member>
         <member name="M:OpenTriviaSharp.OpenTriviaClient.CountQuestionAsync(OpenTriviaSharp.Models.Category,OpenTriviaSharp.Models.Difficulty)">
             <summary>
