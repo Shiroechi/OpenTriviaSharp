@@ -534,13 +534,13 @@ namespace OpenTriviaSharp
 
 			if (sessionToken != "")
 			{
-				url.Append($"&token{ sessionToken }");
+				url.Append($"&token={ sessionToken }");
 			}
 			else
 			{
 				if (this._SessionToken != "")
 				{
-					url.Append($"&token{ this._SessionToken }");
+					url.Append($"&token={ this._SessionToken }");
 				}
 			}
 
