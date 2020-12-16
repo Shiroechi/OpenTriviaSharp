@@ -61,11 +61,6 @@ namespace OpenTriviaSharp
 			{
 				this._SessionToken = sessionToken;
 			}
-
-			ServicePointManager.SecurityProtocol |= 
-				SecurityProtocolType.Tls12 |
-				SecurityProtocolType.Tls11 |
-				SecurityProtocolType.Tls;
 		}
 
 		/// <summary>
