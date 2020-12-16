@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net;
 using System.Net.Http;
 using System.Text;
 using System.Text.Json;
@@ -20,9 +19,9 @@ namespace OpenTriviaSharp
 		#region Member
 
 		private HttpClient _HttpClient;
-		private bool _Supplied;
-		private string _BaseApiUrl = "https://opentdb.com/api.php?";
-		private string _BaseTokenApiUrl = "https://opentdb.com/api.php?";
+		private readonly bool _Supplied;
+		private readonly string _BaseApiUrl = "https://opentdb.com/api.php?";
+		private readonly string _BaseTokenApiUrl = "https://opentdb.com/api.php?";
 		private string _SessionToken;
 
 		#endregion Member
@@ -520,12 +519,12 @@ namespace OpenTriviaSharp
 
 			if (difficulty != Difficulty.Any)
 			{
-				url.Append($"&difficulty={ difficulty }");
+				url.Append($"&difficulty={ difficulty.ToString().ToLower() }");
 			}
 
 			if (type != TriviaType.Any)
 			{
-				url.Append($"&type={ type }");
+				url.Append($"&type={ type.ToString().ToLower() }");
 			}
 
 			if (encoding != ResponseEncoding.Default)
