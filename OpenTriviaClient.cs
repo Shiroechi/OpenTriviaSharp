@@ -1,8 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Net;
 using System.Net.Http;
 using System.Text;
-using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
 using System.Web;
@@ -217,6 +217,34 @@ namespace OpenTriviaSharp
 		}
 
 		/// <summary>
+		/// Read JSON data with encoding <see cref="ResponseEncoding.Base64"/>.
+		/// </summary>
+		/// <param name="item"></param>
+		/// <returns>
+		///		A <see cref="TriviaQuestion"/>.
+		/// </returns>
+		protected TriviaQuestion ReadTriviaQuestionBase64(JsonElement item)
+		{
+			var incorrect = new List<string>();
+
+			foreach (var ans in item.GetProperty("incorrect_answers").EnumerateArray())
+			{
+				incorrect.Add(
+					this.FromBase64(
+						ans.GetString()));
+			}
+
+			return new TriviaQuestion(
+				this.DetermineCategory(this.FromBase64(item.GetProperty("category").GetString())),
+				this.DetermineType(this.FromBase64(item.GetProperty("type").GetString())),
+				this.DetermineDifficulty(this.FromBase64(item.GetProperty("difficulty").GetString())),
+				this.FromBase64(item.GetProperty("question").GetString()),
+				this.FromBase64(item.GetProperty("correct_answer").GetString()),
+				incorrect.ToArray()
+				);
+		}
+
+		/// <summary>
 		/// Add browser user agent to <see cref="HttpClient"/>.
 		/// </summary>
 		protected void AddUserAgent()
@@ -232,6 +260,23 @@ namespace OpenTriviaSharp
 					"User-Agent",
 					"Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/87.0.4280.66 Safari/537.36");
 			}
+		}
+
+		#region Helper Method
+
+		/// <summary>
+		///		Convert base64 string to UTF-8 string.
+		/// </summary>
+		/// <param name="base64String">
+		///		Base64 string to convert.
+		///		</param>
+		/// <returns>
+		///		UTF-8 string.
+		/// </returns>
+		protected string FromBase64(string base64String)
+		{
+			return Encoding.UTF8.GetString(
+				Convert.FromBase64String(base64String));
 		}
 
 		/// <summary>
@@ -421,6 +466,8 @@ namespace OpenTriviaSharp
 			}
 		}
 
+		#endregion Helper Method
+
 		#endregion Protected Method
 
 		#region Public Method
@@ -517,15 +564,25 @@ namespace OpenTriviaSharp
 
 				var questions = new List<TriviaQuestion>();
 
-				foreach (var item in jsonArray.EnumerateArray())
+				if (encoding == ResponseEncoding.Default)
 				{
-					if (encoding == ResponseEncoding.Default)
+					foreach (var item in jsonArray.EnumerateArray())
 					{
 						questions.Add(this.ReadTriviaQuestion(item));
 					}
-					else if (encoding == ResponseEncoding.Url3986)
+				}
+				else if (encoding == ResponseEncoding.Url3986)
+				{
+					foreach (var item in jsonArray.EnumerateArray())
 					{
 						questions.Add(this.ReadTriviaQuestionURL(item));
+					}
+				}
+				else
+				{
+					foreach (var item in jsonArray.EnumerateArray())
+					{
+						questions.Add(this.ReadTriviaQuestionBase64(item));
 					}
 				}
 
