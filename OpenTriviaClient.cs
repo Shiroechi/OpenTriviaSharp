@@ -615,7 +615,7 @@ namespace OpenTriviaSharp
 		/// <returns>
 		///		New session token.
 		/// </returns>
-		public async Task<string> ResetTokenAsync(string sessionToken)
+		public async Task<bool> ResetTokenAsync(string sessionToken)
 		{
 			var url = $"{ this._BaseTokenApiUrl }command=reset&token={ sessionToken }";
 
@@ -625,12 +625,12 @@ namespace OpenTriviaSharp
 				{
 					var responseCode = doc.RootElement.GetProperty("response_code").GetByte();
 
-					if (responseCode != 0)
+					if (responseCode == 0)
 					{
-						throw new OpenTriviaException(this.ResponseError(responseCode));
+						return true;
 					}
 
-					return doc.RootElement.GetProperty("token").GetString();
+					return false;
 				}
 			}
 			catch (JsonException)
