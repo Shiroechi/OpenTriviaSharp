@@ -1,9 +1,9 @@
 ﻿namespace OpenTriviaSharp.Models
 {
 	/// <summary>
-	/// Encoding of JSON response.
+	/// Response encoding of JSON response.
 	/// </summary>
-	public enum UrlEncoding
+	public enum ResponseEncoding
 	{
 		/// <summary>
 		/// All values will be encoded in HTML encoding.
