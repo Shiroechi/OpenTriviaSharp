@@ -1,10 +1,11 @@
 ﻿using System.Collections.Generic;
-using System.Linq.Expressions;
 using System.Net;
 using System.Net.Http;
 using System.Text;
+using System.Text.Encodings.Web;
 using System.Text.Json;
 using System.Threading.Tasks;
+using System.Web;
 
 using OpenTriviaSharp.Exceptions;
 using OpenTriviaSharp.Models;
@@ -160,7 +161,7 @@ namespace OpenTriviaSharp
 		}
 
 		/// <summary>
-		/// Read JSON data.
+		/// Read JSON data with encoding <see cref="ResponseEncoding.Default"/>.
 		/// </summary>
 		/// <param name="item"></param>
 		/// <returns>
@@ -172,15 +173,17 @@ namespace OpenTriviaSharp
 
 			foreach (var ans in item.GetProperty("incorrect_answers").EnumerateArray())
 			{
-				incorrect.Add(ans.GetString());
+				incorrect.Add(
+					HttpUtility.HtmlDecode(
+						ans.GetString()));
 			}
 
 			return new TriviaQuestion(
 				this.DetermineCategory(item.GetProperty("category").GetString()), 
 				this.DetermineType(item.GetProperty("type").GetString()), 
-				this.DetermineDifficulty(item.GetProperty("difficulty").GetString()), 
-				item.GetProperty("question").GetString(), 
-				item.GetProperty("correct_answer").GetString(),
+				this.DetermineDifficulty(item.GetProperty("difficulty").GetString()),
+				HttpUtility.HtmlDecode(item.GetProperty("question").GetString()),
+				HttpUtility.HtmlDecode(item.GetProperty("correct_answer").GetString()),
 				incorrect.ToArray()
 				);
 		}
@@ -428,7 +431,7 @@ namespace OpenTriviaSharp
 		/// <exception cref="JsonException">
 		///		The JSON is invalid.
 		/// </exception>
-		public async Task<TriviaQuestion[]> GetQuestionAsync(byte amount = 10, Category category = Category.Any, TriviaType type = TriviaType.Any, Difficulty difficulty = Difficulty.Any, UrlEncoding encoding = UrlEncoding.Url3986, string sessionToken = "")
+		public async Task<TriviaQuestion[]> GetQuestionAsync(byte amount = 10, Category category = Category.Any, TriviaType type = TriviaType.Any, Difficulty difficulty = Difficulty.Any, ResponseEncoding encoding = ResponseEncoding.Default, string sessionToken = "")
 		{
 			if (amount <= 0)
 			{
@@ -456,8 +459,11 @@ namespace OpenTriviaSharp
 				url.Append($"&type={ type }");
 			}
 
-			url.Append($"&encode={ encoding.ToString().ToLower() }");
-			
+			if (encoding != ResponseEncoding.Default)
+			{
+				url.Append($"&encode={ encoding.ToString().ToLower() }");
+			}
+
 			if (sessionToken != "")
 			{
 				url.Append($"&token{ sessionToken }");
