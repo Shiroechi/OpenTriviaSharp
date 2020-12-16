@@ -643,6 +643,55 @@ namespace OpenTriviaSharp
 			}
 		}
 
+		/// <summary>
+		///		Retrieves number of question based on <see cref="Category"/>.
+		/// </summary>
+		/// <param name="category">
+		///		Category of question.
+		/// </param>
+		/// <param name="difficulty">
+		///		Difficulty of question.
+		/// </param>
+		/// <returns>
+		///		Number of question.
+		/// </returns>
+		public async Task<uint> CountQuestionAsync(Category category = Category.General, Difficulty difficulty = Difficulty.Any)
+		{
+			var url = $"https://opentdb.com/api_count.php?category={ (byte)category }";
+
+			try
+			{
+				using (var doc = await this.GetJsonResponseAsync<JsonDocument>(url))
+				{
+					var categoryId = doc.RootElement.GetProperty("category_id").GetByte();
+
+					if ((byte)category != categoryId)
+					{
+						throw new OpenTriviaException(this.ResponseError(2));
+					}
+
+					var result = doc.RootElement.GetProperty("category_question_count");
+
+					switch (difficulty)
+					{
+						case Difficulty.Easy:
+							return result.GetProperty("total_easy_question_count").GetUInt32();
+						case Difficulty.Medium:
+							return result.GetProperty("total_medium_question_count").GetUInt32();
+						case Difficulty.Hard:
+							return result.GetProperty("total_hard_question_count").GetUInt32();
+						case Difficulty.Any:
+						default:
+							return result.GetProperty("total_question_count").GetUInt32();
+					}
+				}
+			}
+			catch (JsonException)
+			{
+				throw new OpenTriviaException(this.ResponseError(2));
+			}
+		}
+
 		#endregion Public Method
 	}
 }
