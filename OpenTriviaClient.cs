@@ -613,8 +613,11 @@ namespace OpenTriviaSharp
 		///		Session token to be reset.
 		/// </param>
 		/// <returns>
-		///		New session token.
+		///		<see langword="true"/> if session token reseted; <see langword="false"/> otherwise.
 		/// </returns>
+		/// <exception cref="JsonException">
+		///		The JSON is invalid.
+		/// </exception>
 		public async Task<bool> ResetTokenAsync(string sessionToken)
 		{
 			var url = $"{ this._BaseTokenApiUrl }command=reset&token={ sessionToken }";
