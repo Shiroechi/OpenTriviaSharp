@@ -6,6 +6,10 @@
 	public enum UrlEncoding
 	{
 		/// <summary>
+		/// All values will be encoded in HTML encoding.
+		/// </summary>
+		Default,
+		/// <summary>
 		/// All values will be enoded in Base64.
 		/// </summary>
 		Base64,
