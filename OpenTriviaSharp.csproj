@@ -25,6 +25,7 @@
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Release|AnyCPU'">
     <DebugType>none</DebugType>
     <DebugSymbols>false</DebugSymbols>
+    <DocumentationFile>D:\Project\C#\API\OpenTriviaSharp\OpenTriviaSharp.xml</DocumentationFile>
   </PropertyGroup>
 
   <ItemGroup>
